@@ -174,3 +174,7 @@ cython_debug/
 .pypirc
 .pyc
 venv/
+
+*.jpg
+*.jpeg
+media/
