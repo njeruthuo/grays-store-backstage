@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'corsheaders',
+    'payment',
+    'channels',
     'catalogue',
     'rest_framework',
     'django.contrib.admin',
@@ -73,6 +75,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'gray.wsgi.application'
 
+ASGI_APPLICATION = 'gray.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],  # Ensure Redis is running
+        },
+    },
+}
 
 DATABASES = {
     'default': {
