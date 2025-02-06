@@ -7,9 +7,9 @@ import dotenv
 
 dotenv.read_dotenv()
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gray.settings")
+
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": URLRouter(payment.routing.websocket_urlpatterns),
 })
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gray.settings")
