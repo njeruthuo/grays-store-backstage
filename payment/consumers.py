@@ -1,7 +1,6 @@
-from .views import stk_push
 import json
+from .views import stk_push
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.layers import get_channel_layer
 
 
 class PaymentConsumer(AsyncWebsocketConsumer):
@@ -38,6 +37,8 @@ class MPESAConsumer(AsyncWebsocketConsumer):
 
         # Call the STK push function
         response = stk_push(phone_number, amount, order_id)
+
+        # Create an order here
 
         # Send response to frontend
         await self.send(text_data=json.dumps(response))

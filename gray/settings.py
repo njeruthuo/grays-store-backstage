@@ -25,14 +25,12 @@ SECRET_KEY = 'django-insecure-l*7bac97&jhig8%wz*#w(_bxyxu=i)ilo8gu!4(#v(x$4l$42t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-
-# Application definition
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'corsheaders',
     'payment',
+    'users', 'order',
     'channels',
     'catalogue',
     'rest_framework',
@@ -76,6 +74,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'gray.wsgi.application'
 
 ASGI_APPLICATION = 'gray.asgi.application'
+
+AUTH_USER_MODEL = 'users.User'
 
 CHANNEL_LAYERS = {
     "default": {
