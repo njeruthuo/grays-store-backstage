@@ -15,6 +15,10 @@ from requests.auth import HTTPBasicAuth
 
 from order.models import Order, OrderItem
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 MPESA_CONSUMER_KEY = os.getenv("CONSUMER_KEY")
 MPESA_CONSUMER_SECRET = os.getenv("CONSUMER_SECRET")
 MPESA_SHORTCODE = os.getenv("MPESA_SHORTCODE")
@@ -93,56 +97,38 @@ def create_an_order(user, phone, amount, product_list):
             price=product_obj["price"],  # Store price at purchase time
         )
 
-    return order  # Return the created order if needed
-
-
-# def finish_an_order_request(order_id, transaction_id, *args, **kwargs):
-#     print(args, kwargs)
-#     """Call this function in the callback to finish inserting the transaction ID"""
-
-#     # try:
-#     #     order = Order.objects.get(id=order_id)
-#     #     order.transactionID = transaction_id
-#     #     order.save()
-#     #     return True
-#     # except Order.DoesNotExist:
-#     #     return False
+    return order
 
 
 @csrf_exempt
 def mpesa_callback(request):
     """Handles M-Pesa STK Push Callback"""
+    logger.info("Mpesa callback received")
+    try:
+        data = json.loads(request.body)  # Parse JSON request
+        logger.info(f"Callback data received: {data}")
+        result_code = data["Body"]["stkCallback"]["ResultCode"]
+        merchant_request_id = data["Body"]["stkCallback"]["MerchantRequestID"]
+        checkout_request_id = data["Body"]["stkCallback"]["CheckoutRequestID"]
 
-    print("request made")
+        # If transaction was successful
+        if result_code == 0:
+            amount = data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][0]["Value"]
+            mpesa_receipt_number = data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][1]["Value"]
+            phone_number = data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][4]["Value"]
 
-    print(request)
+            # Find the order and update it
+            order = Order.objects.filter(
+                transactionID=checkout_request_id).first()
+            if order:
+                order.transactionID = mpesa_receipt_number  # Update with M-Pesa receipt
+                order.delivered = True  # Mark as paid (or any other logic)
+                order.save()
 
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)  # Parse JSON request
-            result_code = data["Body"]["stkCallback"]["ResultCode"]
-            merchant_request_id = data["Body"]["stkCallback"]["MerchantRequestID"]
-            checkout_request_id = data["Body"]["stkCallback"]["CheckoutRequestID"]
+                return JsonResponse({"message": "Payment received and order updated"}, status=200)
 
-            # If transaction was successful
-            if result_code == 0:
-                amount = data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][0]["Value"]
-                mpesa_receipt_number = data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][1]["Value"]
-                phone_number = data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][4]["Value"]
+        return JsonResponse({"message": "Payment failed or was canceled"}, status=400)
 
-                # Find the order and update it
-                order = Order.objects.filter(
-                    transactionID=checkout_request_id).first()
-                if order:
-                    order.transactionID = mpesa_receipt_number  # Update with M-Pesa receipt
-                    order.delivered = True  # Mark as paid (or any other logic)
-                    order.save()
-
-                    return JsonResponse({"message": "Payment received and order updated"}, status=200)
-
-            return JsonResponse({"message": "Payment failed or was canceled"}, status=400)
-
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
-
-    return JsonResponse({"message": "Invalid request"}, status=400)
+    except Exception as e:
+        logger.error(f"Error processing callback: {e}")
+        return JsonResponse({"error": str(e)}, status=500)

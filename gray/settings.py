@@ -140,9 +140,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',  # ✅ Make sure this matches your frontend URL exactly
+    'http://localhost:5173', "https://sandbox.safaricom.co.ke",
+    "https://api.safaricom.co.ke",
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # ✅ Needed if using authentication/cookies
 CORS_ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 CORS_ALLOW_HEADERS = ['*']
+# CORS_ALLOW_ALL_ORIGINS = True
