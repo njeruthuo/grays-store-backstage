@@ -49,3 +49,21 @@ class ProductAPIView(APIView):
 
 
 product_api_view = ProductAPIView.as_view()
+
+
+class BrandAPIView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        return Response({}, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        return Response({}, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        return Response({}, status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        return Response({}, status=status.HTTP_200_OK)
+
+
+brand_api_view = BrandAPIView.as_view()
