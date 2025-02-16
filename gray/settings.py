@@ -79,13 +79,17 @@ CHANNEL_LAYERS = {
 }
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.environ.get("PGDATABASE"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("PGPASSWORD"),
-        "HOST": os.environ.get("POSTGRES_URL"),
-        "PORT": os.environ.get("5432"),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('PGDATABASE'),
+        'USER': os.environ.get('PGUSER'),
+        'PASSWORD': os.environ.get('PGPASSWORD'),
+        'HOST': os.environ.get('PGHOST'),
+        'PORT': os.environ.get('PGPORT', 5432),
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+        'DISABLE_SERVER_SIDE_CURSORS': True,
     }
 }
 
