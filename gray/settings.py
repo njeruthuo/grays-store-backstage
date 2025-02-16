@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,10 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-l*7bac97&jhig8%wz*#w(_bxyxu=i)ilo8gu!4(#v(x$4l$42t'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app", ".now.sh"]
 
 INSTALLED_APPS = [
     'corsheaders',
@@ -124,11 +124,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -141,10 +143,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173', "https://sandbox.safaricom.co.ke",
-    "https://api.safaricom.co.ke",
+    "https://api.safaricom.co.ke", 'https://9b9b-102-219-209-62.ngrok-free.app'
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # ✅ Needed if using authentication/cookies
 CORS_ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 CORS_ALLOW_HEADERS = ['*']
-# CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = ['https://9b9b-102-219-209-62.ngrok-free.app']
