@@ -18,7 +18,6 @@ CLOUDINARY_STORAGE = {
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-WHITENOISE_MANIFEST_STRICT = False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -155,7 +154,7 @@ STORAGES = {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "cloudinary_storage.storage.StaticHashedCloudinaryStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
@@ -175,3 +174,7 @@ CORS_ALLOW_CREDENTIALS = True  # ✅ Needed if using authentication/cookies
 CORS_ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 CORS_ALLOW_HEADERS = ['*']
 CSRF_TRUSTED_ORIGINS = ['https://9b9b-102-219-209-62.ngrok-free.app']
+
+
+WHITENOISE_MANIFEST_STRICT = False
+# /* # sourceMappingURL=bootstrap.min.css.map */
