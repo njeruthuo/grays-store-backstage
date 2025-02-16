@@ -1,7 +1,18 @@
+import cloudinary.api
+import cloudinary.uploader
+import cloudinary
+
 from pathlib import Path
 import os
 from dotenv import load_dotenv
 load_dotenv()
+
+
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
+}
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,6 +31,8 @@ ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app", ".now.sh", 'localhost']
 
 INSTALLED_APPS = [
     'corsheaders',
+    'cloudinary',
+    'cloudinary_storage',
     'payment',
     'users', 'order',
     'channels',
@@ -138,10 +151,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-        "OPTIONS": {
-            "location": MEDIA_ROOT,  # Uses media/ folder for file uploads
-        },
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
