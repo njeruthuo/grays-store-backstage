@@ -166,7 +166,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173', "https://sandbox.safaricom.co.ke",
-    "https://api.safaricom.co.ke", 'https://9b9b-102-219-209-62.ngrok-free.app'
+    "https://api.safaricom.co.ke", 'https://9b9b-102-219-209-62.ngrok-free.app', "https://grays-online-store.vercel.app/"
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # ✅ Needed if using authentication/cookies
