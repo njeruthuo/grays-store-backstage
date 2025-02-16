@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 """
 from django.core.wsgi import get_wsgi_application
 from whitenoise import WhiteNoise
-from settings import BASE_DIR
+from django.conf import BASE_DIR
 import os
 from dotenv import load_dotenv
 load_dotenv()
