@@ -12,10 +12,6 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-l*7bac97&jhig8%wz*#w(_bxyxu=i)ilo8gu!4(#v(x$4l$42t'
 
 DEBUG = True
@@ -153,9 +149,6 @@ STORAGES = {
 }
 
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
@@ -167,7 +160,8 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True  # ✅ Needed if using authentication/cookies
 CORS_ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 CORS_ALLOW_HEADERS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://9b9b-102-219-209-62.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = [
+    'https://9b9b-102-219-209-62.ngrok-free.app', "https://sandbox.safaricom.co.ke", "https://api.safaricom.co.ke"]
 
 
 WHITENOISE_MANIFEST_STRICT = False
