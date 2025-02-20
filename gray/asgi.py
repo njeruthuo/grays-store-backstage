@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 import os
 import django
 
@@ -8,10 +9,8 @@ import payment.routing
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 
-import dotenv
 
-dotenv.read_dotenv()
-
+load_dotenv()
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
