@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
 
+from django.utils.timezone import make_aware
+
 load_dotenv()
 
 
@@ -35,3 +37,8 @@ def generate_security_credential(initiator_password):
     cipher = PKCS1_v1_5.new(public_key)
     encrypted = cipher.encrypt(initiator_password.encode())
     return base64.b64encode(encrypted).decode()
+
+
+def time_format_helper(TransactionDate):
+    transaction_date_str = str(TransactionDate)
+    return make_aware(datetime.strptime(transaction_date_str, "%Y%m%d%H%M%S"))
