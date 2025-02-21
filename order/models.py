@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 from catalogue.models import Product
+from mpesa.models import MpesaTransaction
 
 User = get_user_model()
 
@@ -10,8 +11,8 @@ class Order(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="orders")
     date_created = models.DateTimeField(auto_now_add=True)
-    transactionID = models.CharField(
-        max_length=200, unique=True, blank=True, null=True)
+    transaction = models.ForeignKey(
+        MpesaTransaction, on_delete=models.CASCADE, related_name='order')
     delivered = models.BooleanField(default=False)
 
     def __str__(self):

@@ -4,12 +4,11 @@ from django.contrib.auth.backends import BaseBackend
 
 from rest_framework.authentication import TokenAuthentication
 
+User = get_user_model()
+
 
 class Authenticator(TokenAuthentication):
     keyword = 'Bearer'
-
-
-User = get_user_model()
 
 
 class EmailOrUsernameBackend(BaseBackend):
