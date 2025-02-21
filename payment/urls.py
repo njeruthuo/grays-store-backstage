@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import mpesa_callback
+from .views import callback_api_view
+
 
 urlpatterns = [
-    path("mpesa/callback/", mpesa_callback, name="mpesa_callback"),
+    path("mpesa/callback/", callback_api_view, name="mpesa_callback"),
 ]

@@ -16,10 +16,12 @@ SECRET_KEY = 'django-insecure-l*7bac97&jhig8%wz*#w(_bxyxu=i)ilo8gu!4(#v(x$4l$42t
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app", ".now.sh", 'localhost']
+ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app", ".now.sh",
+                 'localhost', '*']
 
 INSTALLED_APPS = [
     'corsheaders',
+    'mpesa',
     'cloudinary',
     'cloudinary_storage',
     'payment',
@@ -152,16 +154,21 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173', "https://sandbox.safaricom.co.ke",
-    "https://api.safaricom.co.ke", 'https://9b9b-102-219-209-62.ngrok-free.app', "https://grays-online-store.vercel.app"
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:5173',
+#     "https://sandbox.safaricom.co.ke",
+#     "https://api.safaricom.co.ke",
+#     "https://grays-online-store.vercel.app",
+#     'https://25b3-102-219-208-154.ngrok-free.app',
+# ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_CREDENTIALS = True  # ✅ Needed if using authentication/cookies
 CORS_ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 CORS_ALLOW_HEADERS = ['*']
 CSRF_TRUSTED_ORIGINS = [
-    'https://9b9b-102-219-209-62.ngrok-free.app', "https://sandbox.safaricom.co.ke", "https://api.safaricom.co.ke"]
+    'https://25b3-102-219-208-154.ngrok-free.app', "https://sandbox.safaricom.co.ke", "https://api.safaricom.co.ke"]
 
 
 WHITENOISE_MANIFEST_STRICT = False
