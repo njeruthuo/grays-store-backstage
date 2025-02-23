@@ -154,21 +154,21 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:5173',
-#     "https://sandbox.safaricom.co.ke",
-#     "https://api.safaricom.co.ke",
-#     "https://grays-online-store.vercel.app",
-#     'https://25b3-102-219-208-154.ngrok-free.app',
-# ]
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    "https://sandbox.safaricom.co.ke",
+    "https://api.safaricom.co.ke",
+    "https://grays-online-store.vercel.app",
+    'https://25b3-102-219-208-154.ngrok-free.app',
+]
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_CREDENTIALS = True  # ✅ Needed if using authentication/cookies
 CORS_ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 CORS_ALLOW_HEADERS = ['*']
 CSRF_TRUSTED_ORIGINS = [
-    'https://25b3-102-219-208-154.ngrok-free.app', "https://sandbox.safaricom.co.ke", "https://api.safaricom.co.ke"]
+    "https://sandbox.safaricom.co.ke", "https://api.safaricom.co.ke", 'https://grays-online-store.vercel.app/']
 
 
 WHITENOISE_MANIFEST_STRICT = False

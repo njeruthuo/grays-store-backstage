@@ -50,7 +50,7 @@ def stk_push(request):
         "PartyA": data.get('phone'),
         "PartyB": os.getenv('MPESA_SHORTCODE'),
         "PhoneNumber": data.get('phone'),
-        "CallBackURL": os.getenv('MPESA_CALLBACK_URL'),
+        "CallBackURL": "https://truly-evident-hedgehog.ngrok-free.app/callback/",
         "AccountReference": "GRAYS ONLINE STORE",
         "TransactionDesc": "Payment for services"
     }
