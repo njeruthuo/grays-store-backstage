@@ -2,12 +2,14 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .serializers import ProductSerializer, Product
+from .serializers import *
 
 
 class CategoryAPIView(APIView):
     def get(self, request, *args, **kwargs):
-        return Response({}, status=status.HTTP_200_OK)
+        categories = Category.objects.all()
+        serializer_data = CategorySerializer(categories, many=True).data
+        return Response(serializer_data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         return Response({}, status=status.HTTP_200_OK)
@@ -47,3 +49,21 @@ class ProductAPIView(APIView):
 
 
 product_api_view = ProductAPIView.as_view()
+
+
+class BrandAPIView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        return Response({}, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        return Response({}, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        return Response({}, status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        return Response({}, status=status.HTTP_200_OK)
+
+
+brand_api_view = BrandAPIView.as_view()
