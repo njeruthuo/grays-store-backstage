@@ -1,32 +1,35 @@
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.db.transaction import atomic
-
-from users.authentication import Authenticator, TokenAuthentication
-from .utils import get_access_token, generate_password, time_format_helper
-import requests
-import json
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 import os
-from .models import MpesaTransaction
-
-from rest_framework.decorators import api_view
-from rest_framework.decorators import authentication_classes,permission_classes
-from rest_framework.permissions import IsAuthenticated
-
+import json
+import requests
 from datetime import datetime
 
-from order.models import Order, OrderItem
+from django.http import JsonResponse
+from django.db.transaction import atomic
+from django.views.decorators.csrf import csrf_exempt
+
+from rest_framework.decorators import api_view
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+from payment.consumers import MPESAConsumer
+
+from .models import MpesaTransaction
+from order.models import Order, OrderItem, Product
+from users.authentication import Authenticator, TokenAuthentication
+from .utils import get_access_token, generate_password, time_format_helper
 
 
 @atomic()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication])
+@authentication_classes([Authenticator, TokenAuthentication])
 def stk_push(request):
 
     if request.user.is_anonymous:
         return JsonResponse({'error': 'User not authenticated'}, status=401)
-    
+
     access_token = get_access_token()
     password = generate_password()
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
@@ -37,8 +40,6 @@ def stk_push(request):
     }
 
     data = request.data
-
-    print(data, 'request data')
 
     payload = {
         "BusinessShortCode": os.getenv('MPESA_SHORTCODE'),
@@ -77,10 +78,11 @@ def stk_push(request):
     )
 
     for item in cartItems:
-        # Item is a dictionary of items
+
+        product = Product.objects.get(id=item['product']['id'])
         OrderItem.objects.create(
             order=order,
-            product=item['product'],
+            product=product,
             quantity=item['quantity'],
             price=item['product']['price'],
         )
@@ -90,6 +92,7 @@ def stk_push(request):
 
 @csrf_exempt
 def mpesa_callback(request):
+    consumer = MPESAConsumer()
     data = json.loads(request.body) or json.loads(request.data)
 
     callback_data = data.get('Body', {}).get('stkCallback', {})
@@ -108,10 +111,10 @@ def mpesa_callback(request):
 
     transaction.result_code = callback_data.get('ResultCode')
     transaction.result_description = callback_data.get('ResultDesc')
+    metadata = callback_data.get('CallbackMetadata', {}).get('Item', [])
 
     if callback_data.get('ResultCode') == 0:
         print("result code 0")
-        metadata = callback_data.get('CallbackMetadata', {}).get('Item', [])
         for item in metadata:
             if item.get('Name') == 'MpesaReceiptNumber':
                 transaction.receipt_number = item.get('Value')
@@ -122,9 +125,39 @@ def mpesa_callback(request):
                     item.get('Value'))
             elif item.get('Name') == 'PhoneNumber':
                 transaction.phone_number = item.get('Value')
+
     elif callback_data.get('ResultCode') == 1032:
-        metadata = callback_data.get('CallbackMetadata', {}).get('Item', [])
+        Order.objects.get(transaction=transaction).delete()
+        transaction.delete()
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            "mpesa_payments",
+            {
+                "type": "send_mpesa_update",
+                "data": metadata
+            }
+        )
 
     transaction.save()
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "mpesa_payments",
+        {
+            "type": "send_mpesa_update",
+            "data": metadata
+        }
+    )
 
     return JsonResponse({'status': 'success'})
+
+
+def send_payment_confirmation(metadata):
+
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "mpesa_payments",
+        {
+            "type": "send_mpesa_update",
+            "data": metadata
+        }
+    )

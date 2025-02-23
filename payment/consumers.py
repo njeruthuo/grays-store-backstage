@@ -45,4 +45,4 @@ class MPESAConsumer(AsyncWebsocketConsumer):
 
     async def send_mpesa_update(self, event):
         """Sends updates to the frontend when called."""
-        await self.send(text_data=json.dumps(event["data"]))
+        await self.send(text_data=json.dumps(event))

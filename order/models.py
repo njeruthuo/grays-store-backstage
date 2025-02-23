@@ -16,7 +16,7 @@ class Order(models.Model):
     delivered = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Order {self.id} by {self.user}"
+        return f"Order {self.transaction.receipt_number} by {self.transaction.phone_number}"
 
 
 class OrderItem(models.Model):

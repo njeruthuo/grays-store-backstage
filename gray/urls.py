@@ -10,7 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/catalogue/', include('catalogue.urls')),
     path('api/user/', include('users.urls')),
-    # path('payments/', include('payment.urls'))
+    path('api/orders/', include('order.urls')),
 
     path('api/stk-push/', stk_push),
     path('callback/', mpesa_callback),
