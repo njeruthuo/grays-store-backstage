@@ -1,5 +1,5 @@
 import json
-from .views import stk_push
+# from .views import stk_push
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 
