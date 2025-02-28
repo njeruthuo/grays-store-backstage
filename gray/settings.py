@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -78,11 +77,14 @@ ASGI_APPLICATION = 'gray.asgi.application'
 
 AUTH_USER_MODEL = 'users.User'
 
+
+REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379")
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],  # Ensure Redis is running
+            "hosts": [REDIS_URL],
         },
     },
 }
