@@ -15,7 +15,8 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['get_phone', 'get_receipt', 'date_created']
+    list_display = ['get_phone', 'get_receipt',
+                    'date_created', 'lipa_mdogo', 'outstanding_balance', 'payment_completed']
     search_fields = ['get_phone', 'get_receipt', 'date_created']
     # ordering = ['date_created']
     readonly_fields = ['get_user_name', 'get_receipt_number', "date_created"]

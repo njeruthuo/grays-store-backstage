@@ -14,9 +14,24 @@ class Order(models.Model):
     transaction = models.ForeignKey(
         MpesaTransaction, on_delete=models.CASCADE, related_name='order')
     delivered = models.BooleanField(default=False)
+    payment_completed = models.BooleanField(default=True)
+    lipa_mdogo = models.BooleanField(default=False)
+    outstanding_balance = models.DecimalField(
+        decimal_places=2, max_digits=12, default=0.0)
 
     def __str__(self):
         return f"Order {self.transaction.receipt_number} by {self.transaction.phone_number}"
+
+
+class OrderPayment(models.Model):
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name='payments')
+    transaction = models.ForeignKey(MpesaTransaction, on_delete=models.CASCADE)
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
+    date_paid = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.transaction.receipt_number} - {self.amount_paid}"
 
 
 class OrderItem(models.Model):

@@ -1,12 +1,12 @@
 from rest_framework import serializers
 
-from catalogue.models import Product, Category, Brand
+from catalogue.models import Product, Category, Brand,Image
 
 
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
-        fields = ['name']
+        fields = ['id', 'name']
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -30,5 +30,26 @@ class ProductSerializer(serializers.ModelSerializer):
                   'brand', 'category', 'images', 'stocked']
 
     def create(self, validated_data):
-        # Add how we will be adding images by extracting the payload (image and passing it to the image serializer)
-        return super().create(validated_data)
+
+        print(validated_data, 'validated data')
+        # Extract related fields
+        request = self.context.get("request")  # Get request context
+        images = request.FILES.getlist("images")  # Get uploaded images
+
+        brand_data = validated_data.pop("brand")
+        category_data = validated_data.pop("category")
+
+        print(brand_data, 'brand')
+
+        # Get or create brand and category
+        brand, _ = Brand.objects.get_or_create(name=brand_data)
+        category, _ = Category.objects.get_or_create(name=category_data)
+
+        # Create product instance
+        product = Product.objects.create(brand=brand, category=category, **validated_data)
+
+        # Save images to Product
+        for image in images:
+            Image.objects.create(product=product, image=image)
+
+        return product

@@ -13,7 +13,7 @@ class OrderAPIView(APIView):
     authentication_classes = [TokenAuthentication, Authenticator]
 
     def get(self, request, *args, **kwargs):
-        orders = Order.objects.filter(
+        orders = Order.objects.prefetch_related('order_items__product', 'payments').select_related('transaction', 'user').filter(
             user=request.user, transaction__receipt_number__regex=r".+")
 
         serializer_data = OrderSerializer(orders, many=True).data

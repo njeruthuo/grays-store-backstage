@@ -15,7 +15,8 @@ SECRET_KEY = 'django-insecure-l*7bac97&jhig8%wz*#w(_bxyxu=i)ilo8gu!4(#v(x$4l$42t
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["grays-store-backstage.onrender.com"]
+ALLOWED_HOSTS = ["grays-store-backstage.onrender.com",
+                 'localhost', 'truly-evident-hedgehog.ngrok-free.app']
 
 INSTALLED_APPS = [
     'corsheaders',

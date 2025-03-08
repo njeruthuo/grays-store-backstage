@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order, OrderItem, Product, User, MpesaTransaction
+from .models import Order, OrderItem, Product, User, MpesaTransaction, OrderPayment
 
 
 class MpesaTransactionSerializer(serializers.ModelSerializer):
@@ -28,14 +28,28 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ['id', 'price', 'product', 'quantity']
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class OrderPaymentSerializer(serializers.ModelSerializer):
     transaction = MpesaTransactionSerializer()
-    order_items = serializers.SerializerMethodField()
+
+    class Meta:
+        model = OrderPayment
+        fields = '__all__'
+
+
+class OrderSerializer(serializers.ModelSerializer):
+
+    payments = OrderPaymentSerializer(many=True)
+    order_items = OrderItemSerializer(many=True)
 
     class Meta:
         model = Order
-        fields = ['id','transaction', 'date_created', 'delivered', 'order_items']
+        fields = ['id', 'date_created',
+                  'delivered', 'order_items', 'payment_completed', 'lipa_mdogo', 'outstanding_balance', 'payments']
 
     def get_order_items(self, obj):
         items = obj.order_items.all()
+        return OrderItemSerializer(items, many=True).data
+
+    def get_payments(self, obj):
+        items = obj.payments.all()
         return OrderItemSerializer(items, many=True).data
