@@ -30,7 +30,7 @@ class ProductAPIView(APIView):
         products = Product.objects.select_related('brand', 'category')
         serializer_data = ProductSerializer(products, many=True).data
         return Response(serializer_data, status=status.HTTP_200_OK)
-    
+
     # Pagination required here
 
     @atomic

@@ -159,7 +159,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     "https://sandbox.safaricom.co.ke",
     "https://api.safaricom.co.ke",
-    "https://grays-online-store.vercel.app",
+    "https://grays-online-store.vercel.app", "https://www.graysonlinestore.com"
 ]
 
 # CORS_ORIGIN_ALLOW_ALL = True
