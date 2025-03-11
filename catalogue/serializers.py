@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from catalogue.models import Product, Category, Brand,Image
+from catalogue.models import Product, Category, Brand, Image
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -22,7 +22,7 @@ class ProductSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
 
     def get_images(self, obj):
-        return [image.image.url for image in obj.images.all()]
+        return [image.image.url for image in obj.image_set.all()]
 
     class Meta:
         model = Product
@@ -46,7 +46,8 @@ class ProductSerializer(serializers.ModelSerializer):
         category, _ = Category.objects.get_or_create(name=category_data)
 
         # Create product instance
-        product = Product.objects.create(brand=brand, category=category, **validated_data)
+        product = Product.objects.create(
+            brand=brand, category=category, **validated_data)
 
         # Save images to Product
         for image in images:

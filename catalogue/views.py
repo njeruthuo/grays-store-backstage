@@ -50,13 +50,25 @@ class ProductAPIView(APIView):
 
     @atomic
     def post(self, request, *args, **kwargs):
-        data = request.data.copy()  # Make a mutable copy
+        data = request.data
 
         brand_name = data.pop("brand", None)
         category_name = data.pop("category", None)
+        images = data.pop("images", [])
+        price = data.pop("price", None)
+        stocked = data.pop("stocked", False)
 
-        images = request.FILES.getlist("images")
         print("Received Images:", images)
+
+        if isinstance(price, list):
+            price = price[0]
+
+        from decimal import Decimal
+        try:
+            price = Decimal(price) if price else None
+            stocked = bool(stocked) if stocked else False
+        except (ValueError, TypeError):
+            return Response({"error": "Invalid price or stock value."}, status=400)
 
         # Get or create brand & category
         brand, _ = Brand.objects.get_or_create(name=brand_name)
@@ -64,13 +76,13 @@ class ProductAPIView(APIView):
 
         # Create product instance
         product = Product.objects.create(
-            brand=brand, category=category, **data
+            brand=brand, category=category, price=price, stocked=stocked, **data
         )
 
-        # Correct way to add images
-        image_objects = [Image(product=product, image=image)
-                         for image in images]
-        Image.objects.bulk_create(image_objects)  # Efficient image saving
+        if images:
+            image_objects = [Image(product=product, image=image)
+                             for image in images]
+            Image.objects.bulk_create(image_objects)
 
         return Response({"SUCCESS": "PRODUCT CREATION WAS SUCCESSFUL"}, status=status.HTTP_201_CREATED)
 
