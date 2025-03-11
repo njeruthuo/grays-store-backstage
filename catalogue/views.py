@@ -1,3 +1,4 @@
+from rest_framework.pagination import PageNumberPagination
 from django.db.transaction import atomic
 from rest_framework import status
 from rest_framework.views import APIView
@@ -25,13 +26,27 @@ class CategoryAPIView(APIView):
 category_api_view = CategoryAPIView.as_view()
 
 
-class ProductAPIView(APIView):
-    def get(self, request, *args, **kwargs):
-        products = Product.objects.select_related('brand', 'category')
-        serializer_data = ProductSerializer(products, many=True).data
-        return Response(serializer_data, status=status.HTTP_200_OK)
+class ProductPagination(PageNumberPagination):
+    page_size = 10  # Number of items per page
+    page_size_query_param = 'page_size'  # Allow clients to override page size
+    max_page_size = 100
 
-    # Pagination required here
+
+class ProductAPIView(APIView):
+    pagination_class = ProductPagination  # Assign the pagination class
+
+    def get(self, request, *args, **kwargs):
+        products = Product.objects.select_related('brand', 'category').all()
+
+        # Apply pagination
+        paginator = self.pagination_class()
+        paginated_products = paginator.paginate_queryset(products, request)
+
+        # Serialize paginated results
+        serializer = ProductSerializer(paginated_products, many=True)
+
+        # Return paginated response
+        return paginator.get_paginated_response(serializer.data)
 
     @atomic
     def post(self, request, *args, **kwargs):
