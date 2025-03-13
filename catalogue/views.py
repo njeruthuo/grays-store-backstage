@@ -6,6 +6,8 @@ from rest_framework.response import Response
 
 from .serializers import *
 
+from django.db.models import Q
+
 
 class CategoryAPIView(APIView):
     def get(self, request, *args, **kwargs):
@@ -27,8 +29,8 @@ category_api_view = CategoryAPIView.as_view()
 
 
 class ProductPagination(PageNumberPagination):
-    page_size = 10  # Number of items per page
-    page_size_query_param = 'page_size'  # Allow clients to override page size
+    page_size = 10
+    page_size_query_param = 'page_size'
     max_page_size = 100
 
 
@@ -37,6 +39,11 @@ class ProductAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
         products = Product.objects.select_related('brand', 'category').all()
+
+        search_param = request.query_params.get('search')
+        if search_param:
+            products = products.filter(
+                Q(name__icontains=search_param) or Q(brand__name__icontains=search_param) or Q(category__name__icontains=search_param))
 
         # Apply pagination
         paginator = self.pagination_class()
