@@ -170,7 +170,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://sandbox.safaricom.co.ke",
     "https://api.safaricom.co.ke",
     "https://grays-store-backstage.onrender.com",
-    'https://grays-online-store.vercel.app']
+    'https://grays-online-store.vercel.app', "https://api.graysonlinestore.com"]
 
 
 WHITENOISE_MANIFEST_STRICT = False
