@@ -40,7 +40,7 @@ class ProductAPIView(APIView):
     def get(self, request, *args, **kwargs):
         products = Product.objects.select_related('brand', 'category').all()
 
-        search_param = request.query_params.get('search')
+        search_param = request.query_params.get('search', None)
         if search_param:
             products = products.filter(name__icontains=search_param)
 
