@@ -29,8 +29,8 @@ category_api_view = CategoryAPIView.as_view()
 
 
 class ProductPagination(PageNumberPagination):
-    page_size = 10000
-    max_page_size = 10000
+    page_size = 15
+    max_page_size = 20
     page_size_query_param = 'page_size'
 
 
@@ -38,7 +38,7 @@ class ProductAPIView(APIView):
     pagination_class = ProductPagination  # Assign the pagination class
 
     def get(self, request, *args, **kwargs):
-        products = Product.objects.prefetch_related('brand', 'category').all()
+        products = Product.objects.select_related('brand', 'category').all()
 
         search_param = request.query_params.get('search')
         if search_param:
@@ -53,16 +53,6 @@ class ProductAPIView(APIView):
 
         # Return paginated response
         return paginator.get_paginated_response(serializer.data)
-
-    # def get(self, request, *args, **kwargs):
-    #     products = Product.objects.prefetch_related('brand', 'category').all()
-
-    #     search_param = request.query_params.get('search')
-    #     if search_param:
-    #         products = products.filter(name__icontains=search_param)
-
-    #     serializer = ProductSerializer(products, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
 
     @atomic
     def post(self, request, *args, **kwargs):

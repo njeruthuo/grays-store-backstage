@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-l*7bac97&jhig8%wz*#w(_bxyxu=i)ilo8gu!4(#v(x$4l$42t
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["api.graysonlinestore.com"]
+ALLOWED_HOSTS = ["api.graysonlinestore.com",'localhost']
 
 INSTALLED_APPS = [
     'corsheaders',
