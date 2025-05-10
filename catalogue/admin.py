@@ -45,3 +45,21 @@ class ImageInline(admin.StackedInline):
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ImageInline]
     list_display = ['name', 'price', 'stocked']
+    readonly_fields = ['slug', 'product_link']
+
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'slug', 'product_link', 'price', 'description', 'brand', 'category', 'stocked')
+        }),
+    )
+
+    def product_link(self, obj):
+        if not obj.pk:
+            return "-"
+        
+        return f"https://www.graysonlinestore.com/details/{obj.slug}"
+        # adjust this to match your frontend route
+        # url = f"/products/{obj.slug}/"
+        # return format_html(f'<a href="{url}" target="_blank">{url}</a>')
+
+    product_link.short_description = "Product Link"

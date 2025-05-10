@@ -38,9 +38,9 @@ class ProductAPIView(APIView):
     pagination_class = ProductPagination  # Assign the pagination class
 
     def get(self, request, *args, **kwargs):
-        if request.query_params.get('id'):
-            print(request.query_params.get('id'))
-            product = Product.objects.get(id=request.query_params.get('id'))
+        if request.query_params.get('slug'):
+            print(request.query_params.get('slug'))
+            product = Product.objects.get(slug=request.query_params.get('slug'))
             serialized_data = ProductSerializer(product).data
             return Response(serialized_data, status=status.HTTP_200_OK)
         products = Product.objects.select_related('brand', 'category').all()
